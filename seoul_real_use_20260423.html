@@ -1,0 +1,550 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { background: #f8fafc; color: #1e293b; font-family: 'Pretendard'; }
+        .glass { background: white; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .card-hover:hover { border-color: #3b82f6; transform: translateY(-2px); transition: 0.2s; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-10 flex justify-between items-end">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight">서울 <span class="text-blue-600">실거주</span> 트렌드</h1>
+                <p class="text-sm text-slate-500 font-medium mt-1">국민평형(59~84㎡) 실거래 및 인기 단지 리포트</p>
+            </div>
+            <p class="text-[10px] font-mono text-slate-400 italic">Updated: 2026-04-23</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="md:col-span-2 glass p-6 rounded-3xl">
+                <h2 class="text-xs font-bold text-slate-400 mb-4 uppercase tracking-wider">구별 실거주용 거래량 비중</h2>
+                <canvas id="volChart" height="120"></canvas>
+            </div>
+            <div class="glass p-6 rounded-3xl flex flex-col justify-center text-center">
+                <span class="text-xs font-bold text-slate-400 mb-1 uppercase">이달의 실거주 거래</span>
+                <span class="text-4xl font-black text-blue-600">2753건</span>
+                <p class="text-[10px] text-slate-400 mt-2">서울 전역 50~90㎡ 기준</p>
+            </div>
+        </div>
+
+        <h2 class="text-sm font-bold text-slate-900 mb-4 ml-1 flex items-center gap-2">
+            🔥 현재 가장 많이 팔리는 단지 (TOP 30)
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.0s"
+                 onclick="window.open('https://m.land.naver.com/search/result/강북구 미아동 에스케이북한산시티')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">35건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">에스케이북한산시티</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">강북구 미아동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">7억 31</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.03s"
+                 onclick="window.open('https://m.land.naver.com/search/result/중구 황학동 롯데캐슬')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">25건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">롯데캐슬</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">중구 황학동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">10억 9136</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.06s"
+                 onclick="window.open('https://m.land.naver.com/search/result/강북구 미아동 삼각산아이원')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">15건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">삼각산아이원</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">강북구 미아동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">7억 2183</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.09s"
+                 onclick="window.open('https://m.land.naver.com/search/result/관악구 신림동 관악산휴먼시아2단지')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">13건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">관악산휴먼시아2단지</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">관악구 신림동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">6억 8200</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.12s"
+                 onclick="window.open('https://m.land.naver.com/search/result/관악구 봉천동 벽산블루밍')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">12건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">벽산블루밍</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">관악구 봉천동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">10억 3008</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.15s"
+                 onclick="window.open('https://m.land.naver.com/search/result/성북구 정릉동 정릉풍림아이원')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">11건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">정릉풍림아이원</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">성북구 정릉동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">6억 400</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.18s"
+                 onclick="window.open('https://m.land.naver.com/search/result/강동구 상일동 고덕아르테온')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">10건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">고덕아르테온</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">강동구 상일동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">20억 7300</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.21s"
+                 onclick="window.open('https://m.land.naver.com/search/result/구로구 고척동 대우')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">10건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">대우</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">구로구 고척동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">6억 7670</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.24s"
+                 onclick="window.open('https://m.land.naver.com/search/result/금천구 시흥동 남서울힐스테이트')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">10건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">남서울힐스테이트</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">금천구 시흥동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">8억 8030</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.27s"
+                 onclick="window.open('https://m.land.naver.com/search/result/금천구 시흥동 관악산벽산타운5')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">10건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">관악산벽산타운5</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">금천구 시흥동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">5억 3260</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.3s"
+                 onclick="window.open('https://m.land.naver.com/search/result/영등포구 대림동 우성1')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">10건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">우성1</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">영등포구 대림동 · 52㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">9억 6430</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.32999999999999996s"
+                 onclick="window.open('https://m.land.naver.com/search/result/도봉구 도봉동 한신')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">9건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">한신</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">도봉구 도봉동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">5억 8396</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.36s"
+                 onclick="window.open('https://m.land.naver.com/search/result/도봉구 창동 창동주공3단지')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">9건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">창동주공3단지(해등마을)</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">도봉구 창동 · 58㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">7억 377</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.39s"
+                 onclick="window.open('https://m.land.naver.com/search/result/성북구 석관동 두산')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">9건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">두산</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">성북구 석관동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">9억 0</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.42s"
+                 onclick="window.open('https://m.land.naver.com/search/result/송파구 잠실동 리센츠')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">9건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">리센츠</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">송파구 잠실동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">32억 3444</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.44999999999999996s"
+                 onclick="window.open('https://m.land.naver.com/search/result/은평구 불광동 라이프미성')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">9건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">라이프미성</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">은평구 불광동 · 66㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">8억 1166</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.48s"
+                 onclick="window.open('https://m.land.naver.com/search/result/금천구 시흥동 무지개')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">무지개</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">금천구 시흥동 · 53㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">4억 9025</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.51s"
+                 onclick="window.open('https://m.land.naver.com/search/result/성동구 사근동 벽산')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">벽산</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">성동구 사근동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">16억 875</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.54s"
+                 onclick="window.open('https://m.land.naver.com/search/result/송파구 신천동 파크리오')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">파크리오</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">송파구 신천동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">27억 7125</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.57s"
+                 onclick="window.open('https://m.land.naver.com/search/result/송파구 잠실동 잠실엘스')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">잠실엘스</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">송파구 잠실동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">30억 2000</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.6s"
+                 onclick="window.open('https://m.land.naver.com/search/result/양천구 신월동 신안약수')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">신안약수</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">양천구 신월동 · 68㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">6억 8562</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.63s"
+                 onclick="window.open('https://m.land.naver.com/search/result/중구 신당동 남산타운')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">남산타운</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">중구 신당동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">16억 1687</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.6599999999999999s"
+                 onclick="window.open('https://m.land.naver.com/search/result/중랑구 면목동 쌍용더플래티넘용마산')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">쌍용더플래티넘용마산</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">중랑구 면목동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">10억 6287</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.69s"
+                 onclick="window.open('https://m.land.naver.com/search/result/중랑구 중화동 한신아파트상가동유치원동')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">8건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">한신아파트상가동유치원동(103~109)</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">중랑구 중화동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">7억 9312</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.72s"
+                 onclick="window.open('https://m.land.naver.com/search/result/강북구 미아동 벽산라이브파크')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">7건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">벽산라이브파크</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">강북구 미아동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">6억 2564</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.75s"
+                 onclick="window.open('https://m.land.naver.com/search/result/관악구 봉천동 봉천우성')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">7건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">봉천우성</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">관악구 봉천동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">10억 5971</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.78s"
+                 onclick="window.open('https://m.land.naver.com/search/result/관악구 봉천동 관악푸르지오')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">7건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">관악푸르지오</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">관악구 봉천동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">11억 4314</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.8099999999999999s"
+                 onclick="window.open('https://m.land.naver.com/search/result/관악구 봉천동 두산')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">7건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">두산</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">관악구 봉천동 · 59㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">11억 5342</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.84s"
+                 onclick="window.open('https://m.land.naver.com/search/result/관악구 신림동 그대家')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">7건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">그대家</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">관악구 신림동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">5억 9442</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+            <div class="glass p-5 rounded-2xl card-hover flex justify-between items-center cursor-pointer animate__animated animate__fadeInUp" 
+                 style="animation-delay: 0.87s"
+                 onclick="window.open('https://m.land.naver.com/search/result/금천구 독산동 금천롯데캐슬골드파크3차')">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-full font-bold">7건 거래</span>
+                        <h3 class="font-bold text-sm truncate pr-2">금천롯데캐슬골드파크3차</h3>
+                    </div>
+                    <p class="text-[10px] text-slate-500">금천구 독산동 · 84㎡</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-base font-black text-slate-900">10억 6400</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">평균 거래가</p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const guData = {"강남구": 66, "강동구": 137, "강북구": 104, "강서구": 119, "관악구": 151, "광진구": 48, "구로구": 162, "금천구": 91, "노원구": 103, "도봉구": 118, "동대문구": 129, "동작구": 125, "마포구": 102, "서대문구": 166, "서초구": 50, "성동구": 85, "성북구": 161, "송파구": 119, "양천구": 154, "영등포구": 136, "용산구": 31, "은평구": 148, "종로구": 28, "중구": 65, "중랑구": 155};
+        new Chart(document.getElementById('volChart'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(guData),
+                datasets: [{
+                    label: '거래량',
+                    data: Object.values(guData),
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { 
+                    x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+                    y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
