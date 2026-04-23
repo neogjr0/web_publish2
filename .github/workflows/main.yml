@@ -1,0 +1,35 @@
+name: Seoul Real-Use Monthly Update
+
+on:
+  schedule:
+    # 매달 1일 새벽 3시(UTC 기준 18시)에 지가 알아서 자동 실행
+    - cron: '0 18 1 * *' 
+  workflow_dispatch: # 수동 실행 버튼 추가
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14' # 현태님 환경에 맞춘 최신 Python 버전
+
+      - name: Install Dependencies
+        run: |
+          pip install requests # 필요한 requests 라이브러리 설치
+
+      - name: Run Data Setup Script
+        run: |
+          python setup.py # 수집 스크립트 실행
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "SeoulBot"
+          git config --global user.email "seoulbot@github.com"
+          git add index.html seoul_real_use_*.html # 새로 수집한 파일 추가
+          git commit -m "🚀 Automated Monthly Update: Seoul Real-Use Data (V3 Pure Python 3.14)" || echo "No changes to commit"
+          git push # 수집한 데이터를 깃허브에 다시 커밋
